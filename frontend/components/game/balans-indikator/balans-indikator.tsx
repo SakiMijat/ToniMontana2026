@@ -31,7 +31,11 @@ const PHASE_STEP: Record<GamePhase, number> = {
  *                                                                │
  *                                                                └──► idle (retry)
  */
-export function BalansIndikator() {
+interface BalansIndikatorProps {
+  onComplete?: (score: number) => void;
+}
+
+export function BalansIndikator({ onComplete }: BalansIndikatorProps = {}) {
   const [phase, setPhase] = useState<GamePhase>("idle");
   const [metrics, setMetrics] = useState<BalanceMetrics | null>(null);
   const [report, setReport] = useState<ScoreReport | null>(null);
@@ -111,6 +115,7 @@ export function BalansIndikator() {
                 metrics={metrics}
                 report={report}
                 onRetry={startGame}
+                onContinue={onComplete ? () => onComplete(report.score) : undefined}
               />
             )}
           </AnimatePresence>

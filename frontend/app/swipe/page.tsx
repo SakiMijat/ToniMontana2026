@@ -1,18 +1,20 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { GameHeader } from "@/components/game-header";
 import { SwipeCardDeck } from "@/components/swipe-card-deck";
 import { submitSwipeGame } from "@/lib/api";
+import { completeGame } from "@/lib/game-flow";
 import type { SwipeAttempt } from "@/lib/types";
 
 export default function SwipeGamePage() {
   const router = useRouter();
-  const params = useParams<{ id: string }>();
-  const sessionId = params.id;
+  const sessionId = typeof window !== "undefined"
+    ? (localStorage.getItem("safegate:session_id") ?? "")
+    : "";
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -22,12 +24,7 @@ export default function SwipeGamePage() {
     setError(null);
     try {
       const result = await submitSwipeGame(sessionId, attempts);
-      // Hand off to the result screen via localStorage (avoids huge URL).
-      window.localStorage.setItem(
-        `safegate:result:${sessionId}`,
-        JSON.stringify(result),
-      );
-      router.push(`/session/${sessionId}/result`);
+      await completeGame(result.score, "/swipe", router);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to submit results");
       setSubmitting(false);

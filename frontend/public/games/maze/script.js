@@ -479,6 +479,12 @@ if (typeof window !== 'undefined') {
         gameUI.style.display = 'none';
         document.querySelector('.banned-reason').textContent = reason;
         document.querySelector('.banned-overlay').style.display = 'flex';
+        // Fail: advance the game flow after a short delay so the user can read the message
+        setTimeout(() => {
+            if (typeof window.__safegateComplete === 'function') {
+                window.__safegateComplete(0.0);
+            }
+        }, 2500);
     }
 
 
@@ -555,16 +561,18 @@ if (typeof window !== 'undefined') {
         }
         
         winMessageDiv.style.display = 'flex';
-        
+
         setTimeout(() => {
             winMessageDiv.style.display = 'none';
             if (elapsed > TIME_LIMIT) {
-                showBannedScreen('Zmaga! Ampak čas je bil ' + Math.round(elapsed) + 's — prekoračil si limit ' + TIME_LIMIT + 's. Žal ne moreš več igrati! ⏱️');
+                showBannedScreen('You won! But your time was ' + Math.round(elapsed) + 's — over the ' + TIME_LIMIT + 's limit. ⏱️');
             } else {
-                gameStartBtn.style.display = 'block';
-                updateTimerDisplay(0);
+                // Pass: completed within time limit — advance the game flow
+                if (typeof window.__safegateComplete === 'function') {
+                    window.__safegateComplete(1.0);
+                }
             }
-        }, 3000);
+        }, 2000);
     }
 
 

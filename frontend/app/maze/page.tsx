@@ -2,14 +2,26 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import Script from 'next/script';
+
+import { completeGame } from '@/lib/game-flow';
 
 export default function MazePage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
-    // Inicializacija bo potekala preko script.js
-  }, []);
+    // Expose a hook for the maze script to call when the game ends.
+    // score: 1.0 = pass, 0.0 = fail (binary game)
+    (window as any).__safegateComplete = (score: number) => {
+      delete (window as any).__safegateComplete;
+      completeGame(score, '/maze', router);
+    };
+    return () => {
+      delete (window as any).__safegateComplete;
+    };
+  }, [router]);
 
   return (
     <>

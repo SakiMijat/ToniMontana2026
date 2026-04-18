@@ -43,3 +43,14 @@ export function submitOcularGame(
 ): Promise<OcularSubmitResponse> {
   return postJson<OcularSubmitResponse>("/api/games/ocular/submit", payload);
 }
+
+export async function finishSession(
+  sessionId: string,
+  result: "APPROVED" | "RECALIBRATING" | "DENIED",
+): Promise<void> {
+  await fetch(`${API_URL}/api/sessions/${sessionId}/finish`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ result }),
+  });
+}

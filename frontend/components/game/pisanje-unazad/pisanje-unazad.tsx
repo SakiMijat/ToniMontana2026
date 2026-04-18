@@ -33,7 +33,11 @@ const PHASE_STEP: Record<GamePhase, number> = {
  * Captures metrics conforming to GameResult.metrics (start_2.md §4)
  * and produces a ScoreReport consumable by /api/session/submit.
  */
-export function PisanjeUnazad() {
+interface PisanjeUnazadProps {
+  onComplete?: (score: number) => void;
+}
+
+export function PisanjeUnazad({ onComplete }: PisanjeUnazadProps = {}) {
   const [phase, setPhase] = useState<GamePhase>("idle");
   const [word, setWord] = useState<string>("");
   const [metrics, setMetrics] = useState<ReverseTypeMetrics | null>(null);
@@ -146,6 +150,7 @@ export function PisanjeUnazad() {
                 metrics={metrics}
                 report={report}
                 onRetry={startGame}
+                onContinue={onComplete ? () => onComplete(report.score) : undefined}
               />
             )}
           </AnimatePresence>

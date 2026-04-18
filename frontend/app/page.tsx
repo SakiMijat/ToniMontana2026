@@ -7,16 +7,7 @@ import { ShieldCheck } from "lucide-react";
 
 import { UnlockSlider } from "@/components/unlock-slider";
 import { startSession } from "@/lib/api";
-
-const GAME_ROUTES = [
-  "/ocular",
-  "/swipe",
-  "/balans-indikator",
-  "/kartice-boja",
-  "/maze",
-  "/pisanje-unazad",
-  "/tajmer-dugme",
-];
+import { GAME_ROUTES } from "@/lib/game-flow";
 
 function randomGame(): string {
   return GAME_ROUTES[Math.floor(Math.random() * GAME_ROUTES.length)];
@@ -30,7 +21,12 @@ export default function LandingPage() {
     setError(null);
     try {
       const { sessionId } = await startSession();
+      // Clear any stale state from a previous session
+      localStorage.removeItem("safegate:game1_outcome");
+      localStorage.removeItem("safegate:session_result");
+      localStorage.removeItem("safegate:session_score");
       localStorage.setItem("safegate:session_id", sessionId);
+      localStorage.setItem("safegate:game_number", "1");
       router.push(randomGame());
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to start session");

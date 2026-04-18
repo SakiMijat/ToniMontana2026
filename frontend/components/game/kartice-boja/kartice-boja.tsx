@@ -31,7 +31,11 @@ const PHASE_STEP: Record<GamePhase, number> = {
  *                                                              │
  *                                                              └──► idle (retry)
  */
-export function KarticeBoja() {
+interface KarticeBojaProps {
+  onComplete?: (score: number) => void;
+}
+
+export function KarticeBoja({ onComplete }: KarticeBojaProps = {}) {
   const [phase, setPhase] = useState<GamePhase>("idle");
   const [trials, setTrials] = useState<StroopTrial[]>([]);
   const [metrics, setMetrics] = useState<StroopMetrics | null>(null);
@@ -105,6 +109,7 @@ export function KarticeBoja() {
                 metrics={metrics}
                 report={report}
                 onRetry={startGame}
+                onContinue={onComplete ? () => onComplete(report.score) : undefined}
               />
             )}
           </AnimatePresence>

@@ -29,7 +29,11 @@ const PHASE_STEP: Record<GamePhase, number> = {
  * Captures metrics conforming to GameResult.metrics (start_2.md §4)
  * and produces a ScoreReport consumable by /api/session/submit.
  */
-export function TajmerDugme() {
+interface TajmerDugmeProps {
+  onComplete?: (score: number) => void;
+}
+
+export function TajmerDugme({ onComplete }: TajmerDugmeProps = {}) {
   const [phase, setPhase] = useState<GamePhase>("idle");
   const [metrics, setMetrics] = useState<ReflexMetrics | null>(null);
   const [report, setReport] = useState<ScoreReport | null>(null);
@@ -96,6 +100,7 @@ export function TajmerDugme() {
                 metrics={metrics}
                 report={report}
                 onRetry={startGame}
+                onContinue={onComplete ? () => onComplete(report.score) : undefined}
               />
             )}
           </AnimatePresence>

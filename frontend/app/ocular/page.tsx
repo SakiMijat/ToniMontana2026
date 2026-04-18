@@ -9,6 +9,7 @@ import { OcularPursuitGame } from "@/components/ocular-pursuit-game";
 import { WebGazerCalibration } from "@/components/webgazer-calibration";
 import { WebGazerPermission } from "@/components/webgazer-permission";
 import { submitOcularGame } from "@/lib/api";
+import { completeGame } from "@/lib/game-flow";
 import { newPathSeed } from "@/lib/ocular-path";
 import { useWebEyeTrack } from "@/lib/use-web-eye-track";
 import type { OcularSample } from "@/lib/types";
@@ -79,12 +80,8 @@ export default function OcularGamePage() {
           durationMs: DURATION_MS,
           samples,
         });
-        window.localStorage.setItem(
-          `safegate:result:${sessionId}`,
-          JSON.stringify({ ...result, gameType: "OCULAR" }),
-        );
         await teardown();
-        router.push(`/result`);
+        await completeGame(result.score, "/ocular", router);
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Submission failed";
         setSubmitError(msg);

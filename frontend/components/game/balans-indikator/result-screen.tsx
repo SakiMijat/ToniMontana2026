@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CarFront, Check, Phone, RotateCcw, Target, TriangleAlert } from "lucide-react";
+import { CarFront, Check, RotateCcw, Target, TriangleAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { TARGET_CENTER, TARGET_HALF_WIDTH } from "@/lib/physicsBalans";
@@ -12,9 +12,10 @@ interface ResultScreenProps {
   metrics: BalanceMetrics;
   report: ScoreReport;
   onRetry: () => void;
+  onContinue?: () => void;
 }
 
-export function ResultScreen({ metrics, report, onRetry }: ResultScreenProps) {
+export function ResultScreen({ metrics, report, onRetry, onContinue }: ResultScreenProps) {
   const cfg = tierConfig(report.tier);
 
   return (
@@ -155,46 +156,16 @@ export function ResultScreen({ metrics, report, onRetry }: ResultScreenProps) {
         transition={{ delay: 0.85 }}
         className="flex w-full max-w-md flex-col gap-3"
       >
-        {report.tier === "DENIED" ? (
-          <>
-            <Button
-              variant="danger"
-              size="lg"
-              onClick={() => {
-                window.location.href = "tel:+38614444555";
-              }}
-              className="w-full"
-            >
-              <Phone className="h-5 w-5" />
-              Call Taxi
-            </Button>
-            <Button variant="ghost" size="default" onClick={onRetry} className="w-full">
-              <RotateCcw className="h-4 w-4" />
-              Retry Diagnostic
-            </Button>
-          </>
-        ) : report.tier === "APPROVED" ? (
-          <>
-            <Button variant="success" size="lg" disabled className="w-full">
-              <CarFront className="h-5 w-5" />
-              Vehicle Unlocked
-            </Button>
-            <Button variant="ghost" size="default" onClick={onRetry} className="w-full">
-              <RotateCcw className="h-4 w-4" />
-              Run Again
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button variant="primary" size="lg" onClick={onRetry} className="w-full">
-              <RotateCcw className="h-5 w-5" />
-              Recalibrate — Retry
-            </Button>
-            <p className="text-center text-xs text-slate-500">
-              One additional verification test will be required.
-            </p>
-          </>
+        {onContinue && (
+          <Button variant="primary" size="lg" onClick={onContinue} className="w-full">
+            <CarFront className="h-5 w-5" />
+            Continue
+          </Button>
         )}
+        <Button variant="ghost" size="default" onClick={onRetry} className="w-full">
+          <RotateCcw className="h-4 w-4" />
+          Retry Diagnostic
+        </Button>
       </motion.div>
     </motion.div>
   );
