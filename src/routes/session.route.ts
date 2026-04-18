@@ -5,13 +5,25 @@ export const sessionRouter = Router();
 
 const DEFAULT_USER_ID = "69e3eb5598104d8fbdd39074";
 
+const COOLDOWN_MS = 60 * 60 * 1000; // 1 hour
+
 sessionRouter.post("/", async (req: Request, res: Response) => {
   const body = req.body as Record<string, unknown>;
   const userId = (typeof body.user_id === "string" && body.user_id) ? body.user_id : DEFAULT_USER_ID;
 
-  const session = await prisma.session.create({
-    data: { userId },
+  const oneHourAgo = new Date(Date.now() - COOLDOWN_MS);
+  const lastDenied = await prisma.session.findFirst({
+    where: { userId, result: "DENIED", endTime: { gte: oneHourAgo } },
+    orderBy: { endTime: "desc" },
   });
+
+  if (lastDenied?.endTime) {
+    const unlocksAt = new Date(lastDenied.endTime.getTime() + COOLDOWN_MS);
+    res.status(429).json({ error: "COOLDOWN", unlocks_at: unlocksAt.toISOString() });
+    return;
+  }
+
+  const session = await prisma.session.create({ data: { userId } });
 
   res.status(201).json({
     _id: session.id,
@@ -24,10 +36,10 @@ sessionRouter.post("/", async (req: Request, res: Response) => {
 
 sessionRouter.patch("/:id/finish", async (req: Request, res: Response) => {
   const body = req.body as Record<string, unknown>;
-  const validResults = ["APPROVED", "RECALIBRATING", "DENIED"];
+  const validResults = ["APPROVED", "DENIED"];
 
   if (!validResults.includes(body.result as string)) {
-    res.status(400).json({ error: "result must be APPROVED | RECALIBRATING | DENIED" });
+    res.status(400).json({ error: "result must be APPROVED | DENIED" });
     return;
   }
 
@@ -39,7 +51,7 @@ sessionRouter.patch("/:id/finish", async (req: Request, res: Response) => {
 
   const updated = await prisma.session.update({
     where: { id: req.params.id },
-    data: { result: body.result as "APPROVED" | "RECALIBRATING" | "DENIED", endTime: new Date() },
+    data: { result: body.result as "APPROVED" | "DENIED", endTime: new Date() },
   });
 
   res.status(200).json({

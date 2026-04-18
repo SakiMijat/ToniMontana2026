@@ -1,5 +1,5 @@
 import cors from "cors";
-import express from "express";
+import express, { type NextFunction, type Request, type Response } from "express";
 
 import { healthRouter } from "./routes/health.route";
 import { ocularRouter } from "./routes/ocular.route";
@@ -23,3 +23,11 @@ app.use("/api/users", userRouter);
 app.use("/api/sessions", sessionRouter);
 app.use("/api/games/swipe", swipeRouter);
 app.use("/api/games/ocular", ocularRouter);
+
+// Global error handler — catches any unhandled error thrown from async route handlers
+// so the process never crashes on a DB timeout or unexpected exception.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  console.error("[app] unhandled error:", err);
+  res.status(500).json({ error: "Internal server error" });
+});
