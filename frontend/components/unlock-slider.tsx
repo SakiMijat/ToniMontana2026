@@ -16,7 +16,7 @@ interface UnlockSliderProps {
 const HANDLE_SIZE = 72;
 const TRACK_PADDING = 6;
 const COMPLETE_RATIO = 0.82;
-const springTransition = { type: "spring", stiffness: 320, damping: 32 };
+const springTransition = { type: "spring" as const, stiffness: 320, damping: 32 };
 
 export function UnlockSlider({
   onUnlock,
@@ -60,8 +60,14 @@ export function UnlockSlider({
     return () => observer.disconnect();
   }, []);
 
+  const animateHandleTo = (target: number) =>
+    animate(x.get(), target, {
+      ...springTransition,
+      onUpdate: (latest) => x.set(latest),
+    });
+
   useEffect(() => {
-    const controls = animate(x, isUnlocked ? dragLimit : 0, springTransition);
+    const controls = animateHandleTo(isUnlocked ? dragLimit : 0);
     return () => controls.stop();
   }, [dragLimit, isUnlocked, x]);
 
@@ -81,7 +87,7 @@ export function UnlockSlider({
       return;
     }
 
-    animate(x, 0, springTransition);
+    animateHandleTo(0);
   };
 
   return (
