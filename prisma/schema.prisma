@@ -8,10 +8,51 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String
-  email         String   @unique
-  baselineScore Float    @default(1.0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  email         String    @unique
+  baselineScore Float     @default(1.0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+}
+
+// Tier thresholds — APPROVED ≥ 0.8 | RECALIBRATING ≥ 0.5 | DENIED < 0.5
+model Session {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String        @db.ObjectId
+  user        User          @relation(fields: [userId], references: [id])
+  status      SessionStatus @default(PENDING)
+  finalScore  Float?
+  attempts    Int           @default(1)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  gameResults GameResult[]
+}
+
+model GameResult {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionId String   @db.ObjectId
+  session   Session  @relation(fields: [sessionId], references: [id])
+  gameType  GameType
+  metrics   Json
+  passed    Boolean
+  createdAt DateTime @default(now())
+}
+
+enum SessionStatus {
+  PENDING
+  APPROVED
+  RECALIBRATING
+  DENIED
+}
+
+enum GameType {
+  OCULAR
+  TIMER
+  MAZE
+  REVERSE_TYPE
+  MEMORY
+  SWIPE
+  STROOP
 }

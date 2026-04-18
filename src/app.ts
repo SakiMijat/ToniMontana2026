@@ -2,6 +2,8 @@ import cors from "cors";
 import express from "express";
 
 import { healthRouter } from "./routes/health.route";
+import { sessionRouter } from "./routes/session.route";
+import { swipeRouter } from "./routes/swipe.route";
 
 export const app = express();
 
@@ -13,3 +15,5 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/api", healthRouter);
+app.use("/api/sessions", sessionRouter);
+app.use("/api/games/swipe", swipeRouter);
