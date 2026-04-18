@@ -21,7 +21,7 @@ type Phase = "countdown" | "playing";
 
 const COUNTDOWN_MS = 3_000;
 const SAMPLE_INTERVAL_MS = 33; // ~30 Hz
-const OFF_TARGET_THRESHOLD = 0.15; // normalized distance
+const OFF_TARGET_THRESHOLD = 0.18; // normalized distance (slightly more tolerant)
 
 function euclidean(ax: number, ay: number, bx: number, by: number): number {
   const dx = ax - bx;
@@ -190,9 +190,9 @@ export function OcularPursuitGame({
             transform: "translate(-50%, -50%)",
           }}
         >
-          <div className="relative h-20 w-20">
+          <div className="relative h-24 w-24">
             <span className="absolute inset-0 rounded-full bg-safegate-primary/30 blur-xl" />
-            <span className="absolute inset-[16px] rounded-full bg-safegate-primary shadow-glow animate-pulse-glow" />
+            <span className="absolute inset-[18px] rounded-full bg-safegate-primary shadow-glow animate-pulse-glow" />
           </div>
         </div>
       )}

@@ -10,14 +10,18 @@ import type {
 // ───── Scoring constants (mirror documentation.md §5 formula shape) ─────
 const ACCURACY_WEIGHT = 0.7;
 const SMOOTHNESS_WEIGHT = 0.3;
-const PASS_THRESHOLD = 0.65; // pursuit is harder than swipe — softer bar
+const PASS_THRESHOLD = 0.58; // pursuit is harder than swipe — keep bar softer
 
 // Normalized deviation beyond this counts as "total miss"
-const MAX_DEVIATION = 0.3;
+const MAX_DEVIATION = 0.36;
+// Ignore tiny gaze/target offsets (camera noise + natural fixation jitter)
+const ACCURACY_GRACE_RADIUS = 0.035;
+// Compensate model + human pursuit latency when reconstructing target position
+const TRACKING_LAG_COMP_MS = 120;
 // Gaze velocity > this multiplier of target velocity = saccade
-const SACCADE_VELOCITY_RATIO = 3;
+const SACCADE_VELOCITY_RATIO = 4.2;
 // If more than this fraction of samples are saccades, smoothness = 0
-const SACCADE_COUNT_CEILING = 0.3;
+const SACCADE_COUNT_CEILING = 0.5;
 
 // ───── Sanity guards ─────
 const MIN_SAMPLE_HZ = 10;
@@ -130,9 +134,10 @@ function computeMetrics(payload: OcularSubmitPayload): OcularMetrics {
   // --- Accuracy: mean clamped deviation, inverted ---
   let deviationSum = 0;
   for (const s of valid) {
-    const tgt = targetAt(s.t, pathSeed);
+    const tgt = targetAt(Math.max(0, s.t - TRACKING_LAG_COMP_MS), pathSeed);
     const d = distance(s.gx, s.gy, tgt.x, tgt.y);
-    deviationSum += clamp(d, 0, MAX_DEVIATION);
+    const effectiveDeviation = Math.max(0, d - ACCURACY_GRACE_RADIUS);
+    deviationSum += clamp(effectiveDeviation, 0, MAX_DEVIATION);
   }
   const avgDeviation = valid.length > 0 ? deviationSum / valid.length : MAX_DEVIATION;
   const accuracy = 1 - avgDeviation / MAX_DEVIATION;

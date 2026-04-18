@@ -15,7 +15,7 @@ import type { OcularSample } from "@/lib/types";
 
 type Phase = "permission" | "calibrate" | "play" | "submitting" | "error";
 
-const DURATION_MS = 25_000;
+const DURATION_MS = 10_000;
 
 export default function OcularGamePage() {
   const router = useRouter();

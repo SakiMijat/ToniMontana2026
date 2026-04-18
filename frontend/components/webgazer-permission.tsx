@@ -35,7 +35,7 @@ export function WebGazerPermission({
         </h2>
         <p className="text-slate-400 font-medium">
           Ocular Pursuit is our most precise sobriety signal. We track your
-          eye movement while you follow a moving dot for 25 seconds.
+          eye movement while you follow a moving dot for 10 seconds.
         </p>
       </div>
 
