@@ -1,4 +1,6 @@
 import type {
+  OcularSubmitPayload,
+  OcularSubmitResponse,
   SessionStartResponse,
   SwipeAttempt,
   SwipeSubmitResponse,
@@ -33,4 +35,10 @@ export function submitSwipeGame(
     sessionId,
     attempts,
   });
+}
+
+export function submitOcularGame(
+  payload: OcularSubmitPayload,
+): Promise<OcularSubmitResponse> {
+  return postJson<OcularSubmitResponse>("/api/games/ocular/submit", payload);
 }

@@ -5,14 +5,20 @@ import { useEffect, useState } from "react";
 
 import { GameHeader } from "@/components/game-header";
 import { TierResult } from "@/components/tier-result";
-import { tierFromScore, type SwipeSubmitResponse } from "@/lib/types";
+import {
+  tierFromScore,
+  type OcularSubmitResponse,
+  type SwipeSubmitResponse,
+} from "@/lib/types";
 
-export default function SwipeResultPage() {
+type StoredResult = SwipeSubmitResponse | OcularSubmitResponse;
+
+export default function ResultPage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const sessionId = params.id;
 
-  const [result, setResult] = useState<SwipeSubmitResponse | null>(null);
+  const [result, setResult] = useState<StoredResult | null>(null);
 
   useEffect(() => {
     const raw = window.localStorage.getItem(`safegate:result:${sessionId}`);
@@ -21,7 +27,7 @@ export default function SwipeResultPage() {
       return;
     }
     try {
-      setResult(JSON.parse(raw) as SwipeSubmitResponse);
+      setResult(JSON.parse(raw) as StoredResult);
     } catch {
       router.replace("/");
     }
@@ -36,16 +42,26 @@ export default function SwipeResultPage() {
   }
 
   const tier = tierFromScore(result.score);
+  const secondary =
+    result.gameType === "OCULAR"
+      ? {
+          label: "Smoothness",
+          value: `${(result.metrics.smoothness * 100).toFixed(0)}%`,
+        }
+      : {
+          label: "Avg Latency",
+          value: `${result.metrics.avgLatencyMs.toFixed(0)}ms`,
+        };
 
   return (
     <div className="flex min-h-screen flex-col">
-      <GameHeader title="Result" progress={{ current: 3, total: 3 }} />
+      <GameHeader title="Result" progress={{ current: 1, total: 1 }} />
       <main className="flex flex-1 items-center justify-center px-6 py-10">
         <TierResult
           tier={tier}
           score={result.score}
           accuracy={result.metrics.accuracy}
-          avgLatencyMs={result.metrics.avgLatencyMs}
+          secondary={secondary}
           onRetry={() => {
             window.localStorage.removeItem(`safegate:result:${sessionId}`);
             router.push("/");

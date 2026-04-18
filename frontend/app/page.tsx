@@ -1,13 +1,27 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { ShieldCheck } from "lucide-react";
 
 import { UnlockSlider } from "@/components/unlock-slider";
+import { startSession } from "@/lib/api";
 
 export default function LandingPage() {
-  const handleUnlock = () => {
-    // Placeholder for future route wiring once the unlock flow is finalized.
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+
+  // Slide-to-unlock kicks off the cognitive check: create a session, then
+  // send the user to Game 1 (ocular pursuit).
+  const handleUnlock = async () => {
+    setError(null);
+    try {
+      const { sessionId } = await startSession();
+      router.push(`/session/${sessionId}/ocular`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to start session");
+    }
   };
 
   return (
@@ -33,16 +47,21 @@ export default function LandingPage() {
             SafeGate
           </h1>
           <p className="max-w-xl text-base font-medium leading-relaxed text-slate-400 sm:text-lg">
-            Slide the lock to arm your vehicle access flow. This first version
-            stays on the landing screen after unlock so we can refine the entry
-            experience before wiring the next route.
+            Slide the lock to start your 60-second cognitive check. No hardware,
+            no friction — just proof you&apos;re fit to drive.
           </p>
         </div>
 
         <UnlockSlider onUnlock={handleUnlock} />
 
+        {error && (
+          <p className="w-full max-w-xl rounded-xl border border-safegate-danger/40 bg-safegate-danger/10 p-3 text-sm text-safegate-danger">
+            {error}
+          </p>
+        )}
+
         <p className="font-mono text-[11px] uppercase tracking-[0.32em] text-slate-600">
-          Swipe to begin · No redirect yet
+          Game 1 · Ocular Pursuit · Prati Tačku
         </p>
       </motion.div>
     </main>
