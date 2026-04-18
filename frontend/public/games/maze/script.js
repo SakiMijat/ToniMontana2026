@@ -34,10 +34,8 @@ if (typeof window !== 'undefined') {
     let _start_tile = 2;
     let _end_tile = 3;
 
-
     let gameWinImageIndex = 0;
     let gameWinSoundIndex = 0;
-
 
     // ---- Lives & Timer system ----
     const TIME_LIMIT = 30;
@@ -46,7 +44,6 @@ if (typeof window !== 'undefined') {
     let timerInterval = null;
     let isBanned = false;
 
-
     let availableImages = [
         '//www.scaryforkids.com/pics/scary-movie.jpg',
         '//orion-uploads.openroadmedia.com/lg_380efe-pennywiseweb.jpg',
@@ -54,11 +51,9 @@ if (typeof window !== 'undefined') {
         '//media.giphy.com/media/LLHkw7UnvY3Kw/giphy.gif'
     ];
 
-
     let availableSounds = [
         new Audio('https://www.dropbox.com/s/ari3xr2h05a7lwz/sound_01.mp3?raw=1'),
     ];
-
 
     availableSounds[0].volume = 0.3;
     gameWinImageUrl = availableImages[gameWinImageIndex];
@@ -108,7 +103,6 @@ if (typeof window !== 'undefined') {
         updateStartTriggerPosition();
     }
 
-
     function toggleSpecialTileType() {
         if (appState !== states_editor) return;
         if (hoverTileY >= 0 && hoverTileY < gridHeight && hoverTileX >= 0 && hoverTileX < gridWidth) {
@@ -116,12 +110,10 @@ if (typeof window !== 'undefined') {
         }
     }
 
-
     function getMousePos(canvas, evt) {
         var rect = canvas.getBoundingClientRect();
         return { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
     }
-
 
     function setup() {
         for (let y = 0; y < gridHeight; ++y) {
@@ -131,9 +123,7 @@ if (typeof window !== 'undefined') {
         }
     }
 
-
     function mouseClick() {}
-
 
     function loop(e) {
         update(e);
@@ -142,12 +132,10 @@ if (typeof window !== 'undefined') {
     } window.requestAnimationFrame(loop);
     setup();
 
-
     function clear() {
         ctx.fillStyle = '#151d26';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
-
 
     function render() {
         clear();
@@ -160,7 +148,6 @@ if (typeof window !== 'undefined') {
             renderGameUI();
         }
     }
-
 
     function update(elapsed) {
         let mX = mousePosition.x - gridStartX;
@@ -195,11 +182,9 @@ if (typeof window !== 'undefined') {
         }
     }
 
-
     function withinGameBoard(x, y) {
         return y >= 0 && y < gridHeight && x >= 0 && x < gridWidth;
     }
-
 
     function validateGameTile(tile) {
         if (tile === _wall_tile) {
@@ -208,7 +193,6 @@ if (typeof window !== 'undefined') {
             gameOverWin();
         }
     }
-
 
     function setCurrentTile(tileType) {
         if (tileType === _wall_tile || tileType === _path_tile) {
@@ -236,7 +220,6 @@ if (typeof window !== 'undefined') {
         }
     }
 
-
     function fillTextWrapped(text, x, y, maxWidth, lineHeight) {
         let words = text.split(' ');
         let line = '';
@@ -248,7 +231,6 @@ if (typeof window !== 'undefined') {
         }
         ctx.fillText(line, x, y);
     }
-
 
     function renderGameGrid() {
         ctx.lineWidth = 1;
@@ -271,14 +253,12 @@ if (typeof window !== 'undefined') {
         }
     }
 
-
     function renderGameUI() {
         ctx.font = '10pt FontAwesome';
         ctx.fillStyle = 'white';
         ctx.fillRect(mousePosition.x, mousePosition.y, gameCursorWidth, gameCursorHeight);
         ctx.fillText("\uF11e", gameExitTileX * tileWidth + gridStartX + 1, gameExitTileY * tileHeight + gridStartY + (tileHeight - 4));
     }
-
 
     function renderEditorUI() {
         let x = 20; let y = 20;
@@ -299,7 +279,6 @@ if (typeof window !== 'undefined') {
         ctx.fillText(`Hold CTRL to draw walls`, x, y += 40); ctx.fillStyle = 'white';
         if (pathError && pathError.length > 0) { ctx.fillStyle = 'rgba(192, 57, 43,1.0)'; fillTextWrapped(pathError, x, y += 20, 300, 20); }
     }
-
 
     function renderEditorGrid() {
         ctx.lineWidth = 1;
@@ -330,7 +309,6 @@ if (typeof window !== 'undefined') {
         }
     }
 
-
     function getTileColor(type) {
         if (type === 0) return 'rgba(52, 73, 94, 1.0)';
         if (type === 1) return 'rgba(14, 32, 50, 0.5)';
@@ -341,12 +319,10 @@ if (typeof window !== 'undefined') {
         return 'rgba(14, 32, 50, 0.5)';
     }
 
-
     function toggleMapData() {
         let elm = document.querySelector(".map-data");
         elm.innerHTML = elm.innerHTML !== '' ? '' : encodeMapData();
     }
-
 
     function encodeMapData() {
         let mapstr = `${gridWidth}, ${gridHeight}, ${gameWinImageIndex}, ${gameWinSoundIndex}`;
@@ -362,7 +338,6 @@ if (typeof window !== 'undefined') {
         }
         return mapstr;
     }
-
 
     function decodeMapData(str) {
         str = str.split(" ").join("");
@@ -392,15 +367,12 @@ if (typeof window !== 'undefined') {
         return { width, height, imageIndex, soundIndex, tiles: output, startX, startY, exitX, exitY };
     }
 
-
     function getStartPoint() { return { x: gameStartTileX, y: gameStartTileY }; }
     function getExitPoint() { return { x: gameExitTileX, y: gameExitTileY }; }
-
 
     function toScreenPoint(worldPos) {
         return { x: (worldPos.x * tileWidth) + gridStartX, y: (worldPos.y * tileHeight) + gridStartY };
     }
-
 
     function validateMaze(onSuccess, onFail) {
         let start = getStartPoint(); let exit = getExitPoint();
@@ -416,13 +388,9 @@ if (typeof window !== 'undefined') {
         easyStar.calculate();
     }
 
-
     function togglePreview() {
         gameLoseDisplay.style.display = 'none';
         if (gameWinDisplay) gameWinDisplay.style.display = 'none';
-        let winMsg = document.querySelector('.win-message-overlay');
-        if (winMsg) winMsg.style.display = 'none';
-        
         if (appState === states_preview) {
             appState = states_editor;
             canvas.style.cursor = '';
@@ -436,22 +404,17 @@ if (typeof window !== 'undefined') {
         }
     }
 
-
-    // ---- UI helpers ----
     function updateLivesDisplay() {
         let el = document.querySelector('.lives-display');
         if (el) el.textContent = '❤️'.repeat(livesRemaining);
+        // Notify React
+        if (window.__mazeOnLivesChange) window.__mazeOnLivesChange(livesRemaining);
     }
-
 
     function updateTimerDisplay(seconds) {
-        let el = document.querySelector('.timer-display');
-        if (el) {
-            el.textContent = '⏱️ ' + Math.floor(seconds) + 's';
-            el.style.color = seconds > 20 ? '#e74c3c' : 'white';
-        }
+        // Notify React instead of updating DOM directly
+        if (window.__mazeOnTimerChange) window.__mazeOnTimerChange(Math.floor(seconds));
     }
-
 
     function startTimer() {
         stopTimer();
@@ -460,34 +423,34 @@ if (typeof window !== 'undefined') {
             if (gameState !== gameStates_started) return;
             const elapsed = (Date.now() - gameStartTime) / 1000;
             updateTimerDisplay(elapsed);
+            // Check time limit
+            if (elapsed >= TIME_LIMIT) {
+                gameOverTimedOut();
+            }
         }, 100);
     }
-
 
     function stopTimer() {
         if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
     }
 
-
-    function showBannedScreen(reason) {
+    function gameOverTimedOut() {
+        if (isBanned) return;
+        if (gameState !== gameStates_started) return;
         isBanned = true;
+        gameState = gameStates_notStarted;
         stopTimer();
-        gameStartBtn.style.display = 'none';
-        gameLoseDisplay.style.display = 'none';
-        if (gameWinDisplay) gameWinDisplay.style.display = 'none';
+        const elapsed = gameStartTime ? (Date.now() - gameStartTime) / 1000 : TIME_LIMIT;
         canvas.style.cursor = 'default';
         gameUI.style.display = 'none';
-        document.querySelector('.banned-reason').textContent = reason;
-        document.querySelector('.banned-overlay').style.display = 'flex';
+        gameStartBtn.style.display = 'none';
+        gameLoseDisplay.style.display = 'none';
+        // Hand off to React
+        if (window.__mazeOnBanned) window.__mazeOnBanned(elapsed, livesRemaining, true);
     }
-
 
     function prepareGame() {
         if (isBanned) return;
-        
-        let winMsg = document.querySelector('.win-message-overlay');
-        if (winMsg) winMsg.style.display = 'none';
-        
         gameState = gameStates_notStarted;
         stopTimer();
         updateTimerDisplay(0);
@@ -501,7 +464,6 @@ if (typeof window !== 'undefined') {
         updateLivesDisplay();
     }
 
-
     function updateStartTriggerPosition() {
         if (appState !== states_editor) {
             let start = getStartPoint();
@@ -511,7 +473,6 @@ if (typeof window !== 'undefined') {
         }
     }
 
-
     function gameOverLose() {
         if (isBanned) return;
         if (gameState !== gameStates_started) return;
@@ -520,7 +481,14 @@ if (typeof window !== 'undefined') {
         livesRemaining--;
         updateLivesDisplay();
         if (livesRemaining <= 0) {
-            showBannedScreen('No ride for you today—please continue on foot.');
+            isBanned = true;
+            canvas.style.cursor = 'default';
+            gameUI.style.display = 'none';
+            gameStartBtn.style.display = 'none';
+            gameLoseDisplay.style.display = 'none';
+            const elapsed = gameStartTime ? (Date.now() - gameStartTime) / 1000 : 0;
+            // Hand off to React
+            if (window.__mazeOnBanned) window.__mazeOnBanned(elapsed, 0, false);
             return;
         }
         gameLoseDisplay.style.display = 'block';
@@ -528,45 +496,20 @@ if (typeof window !== 'undefined') {
         updateTimerDisplay(0);
     }
 
-
     function gameOverWin() {
         if (isBanned) return;
         if (gameState !== gameStates_started) return;
         const elapsed = gameStartTime ? (Date.now() - gameStartTime) / 1000 : 0;
         gameState = gameStates_notStarted;
         stopTimer();
-        
-        // Namesto prikaza slike, prikažemo tekstovno zmagovalno sporočilo
-        gameWinSound.play(); // Zvok lahko obdržiš ali odstraniš
-        
-        // Ustvarimo tekstovno obvestilo v stilu win overlay-a
-        let winMessageDiv = document.querySelector('.win-message-overlay');
-        if (!winMessageDiv) {
-            // Če še ne obstaja, ga ustvarimo
-            winMessageDiv = document.createElement('div');
-            winMessageDiv.className = 'win-message-overlay';
-            winMessageDiv.innerHTML = `
-                <div class="win-message-box">
-                    <h2>🎉 GOOD JOB! 🎉</h2>
-                    <p>Now you can enter the vehicle!</p>
-                </div>
-            `;
-            document.querySelector('.game').appendChild(winMessageDiv);
-        }
-        
-        winMessageDiv.style.display = 'flex';
-        
-        setTimeout(() => {
-            winMessageDiv.style.display = 'none';
-            if (elapsed > TIME_LIMIT) {
-                showBannedScreen('Zmaga! Ampak čas je bil ' + Math.round(elapsed) + 's — prekoračil si limit ' + TIME_LIMIT + 's. Žal ne moreš več igrati! ⏱️');
-            } else {
-                gameStartBtn.style.display = 'block';
-                updateTimerDisplay(0);
-            }
-        }, 3000);
+        gameWinSound.play();
+        canvas.style.cursor = 'default';
+        gameUI.style.display = 'none';
+        gameStartBtn.style.display = 'none';
+        gameLoseDisplay.style.display = 'none';
+        // Hand off to React
+        if (window.__mazeOnWin) window.__mazeOnWin(elapsed, livesRemaining);
     }
-
 
     function startGame() {
         if (isBanned) return;
@@ -575,9 +518,22 @@ if (typeof window !== 'undefined') {
         if (gameState !== gameStates_started) {
             gameState = gameStates_started;
             startTimer();
+            if (window.__mazeOnStart) window.__mazeOnStart();
         }
     }
 
+    // Exposed for React retry button
+    window.retryMaze = function() {
+        isBanned = false;
+        livesRemaining = 3;
+        gameStartTime = null;
+        const randomMazes = window.__mazeRandomMazes;
+        if (randomMazes) {
+            const chosen = randomMazes[Math.floor(Math.random() * randomMazes.length)];
+            loadMapData(chosen);
+        }
+        prepareGame();
+    };
 
     function play() {
         let data = mapDataInput.value;
@@ -590,7 +546,6 @@ if (typeof window !== 'undefined') {
         prepareGame();
     }
 
-
     function create() {
         gameView.style.display = 'block';
         menuView.style.display = 'none';
@@ -599,7 +554,6 @@ if (typeof window !== 'undefined') {
         loadMapData(mapDataInput.value);
         appState = states_editor;
     }
-
 
     function resetAndCreate() {
         resetMapData();
@@ -613,7 +567,6 @@ if (typeof window !== 'undefined') {
         appState = states_editor;
     }
 
-
     function resetMapData() {
         gridWidth = 32; gridHeight = 32; tileMap = [];
         for (let y = 0; y < gridHeight; ++y) {
@@ -626,7 +579,6 @@ if (typeof window !== 'undefined') {
         if (mapDataInput) mapDataInput.value = '';
     }
 
-
     function loadMapData(data) {
         if (data && data.length > 0) {
             let mapData = decodeMapData(data);
@@ -638,7 +590,6 @@ if (typeof window !== 'undefined') {
         }
     }
 
-
     function selectImage(index) {
         let current = document.querySelector("#img" + gameWinImageIndex);
         let next = document.querySelector("#img" + index);
@@ -648,12 +599,10 @@ if (typeof window !== 'undefined') {
         gameWinImageUrl = availableImages[gameWinImageIndex];
     }
 
-
     function selectAudio(index) {
         gameWinSoundIndex = index;
         gameWinSound = availableSounds[gameWinSoundIndex];
     }
-
 
     /**
      *   EasyStar.js - github.com/prettymuchbryce/EasyStarJS - MIT license
@@ -669,51 +618,26 @@ if (typeof window !== 'undefined') {
         `32, 32, 0, 0, 32x0, 32x0, 32x0, 32x0, 32x0, 32x0, 6x0, 13x1, 13x0, 6x0, 2x1, 3, 11x1, 12x0, 6x0, 15x1, 11x0, 17x0, 5x1, 10x0, 18x0, 5x1, 9x0, 19x0, 5x1, 8x0, 20x0, 5x1, 7x0, 21x0, 5x1, 6x0, 22x0, 5x1, 5x0, 23x0, 4x1, 5x0, 7x0, 6x1, 11x0, 3x1, 5x0, 6x0, 8x1, 10x0, 3x1, 5x0, 5x0, 10x1, 8x0, 4x1, 5x0, 9x1, 2x0, 5x1, 6x0, 5x1, 5x0, 2x1, 2, 5x1, 4x0, 5x1, 4x0, 5x1, 6x0, 7x1, 6x0, 4x1, 3x0, 5x1, 7x0, 14x0, 10x1, 8x0, 14x0, 9x1, 9x0, 13x0, 9x1, 10x0, 12x0, 5x1, 15x0, 11x0, 5x1, 16x0, 11x0, 4x1, 17x0, 11x0, 3x1, 18x0, 32x0, 32x0, 32x0`
     ];
 
+    // Expose mazes for retryMaze
+    window.__mazeRandomMazes = randomMazes;
 
+    const init = () => {
+        const chosen = randomMazes[Math.floor(Math.random() * randomMazes.length)];
+        appState = states_game;
+        gameView.style.display = 'block';
+        menuView.style.display = 'none';
+        editorUI.style.display = 'none';
+        loadMapData(chosen);
+        prepareGame();
+        setTimeout(() => {
+            updateCanvasSize();
+            updateStartTriggerPosition();
+        }, 10);
+    };
 
-
-    // Počakaj da se vse naloži
     if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        (function autoStartRandomMaze() {
-            const chosen = randomMazes[Math.floor(Math.random() * randomMazes.length)];
-            appState = states_game;
-            gameView.style.display = 'block';
-            menuView.style.display = 'none';
-            editorUI.style.display = 'none';
-            
-            // NAJPREJ naložimo podatke labirinta
-            loadMapData(chosen);
-            
-            // POTEM pripravimo igro (to bo pravilno postavilo start gumb)
-            prepareGame();
-            
-            // Posodobimo velikost canvasa in pozicijo start gumba
-            setTimeout(() => {
-                updateCanvasSize();
-                updateStartTriggerPosition();
-            }, 10);
-        })();
-    });
+        document.addEventListener('DOMContentLoaded', init);
     } else {
-    (function autoStartRandomMaze() {
-            const chosen = randomMazes[Math.floor(Math.random() * randomMazes.length)];
-            appState = states_game;
-            gameView.style.display = 'block';
-            menuView.style.display = 'none';
-            editorUI.style.display = 'none';
-            
-            // NAJPREJ naložimo podatke labirinta
-            loadMapData(chosen);
-            
-            // POTEM pripravimo igro (to bo pravilno postavilo start gumb)
-            prepareGame();
-            
-            // Posodobimo velikost canvasa in pozicijo start gumba
-            setTimeout(() => {
-                updateCanvasSize();
-                updateStartTriggerPosition();
-            }, 10);
-        })();
+        init();
     }
 }
