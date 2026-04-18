@@ -26,6 +26,8 @@ declare module "webgazer" {
     params: {
       showVideo: boolean;
       saveDataAcrossSessions: boolean;
+      /** Path WebGazer uses to load MediaPipe FaceMesh assets (default: './mediapipe/face_mesh') */
+      faceMeshSolutionPath: string;
       [key: string]: unknown;
     };
   }

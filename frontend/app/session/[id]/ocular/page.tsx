@@ -10,7 +10,7 @@ import { WebGazerCalibration } from "@/components/webgazer-calibration";
 import { WebGazerPermission } from "@/components/webgazer-permission";
 import { submitOcularGame } from "@/lib/api";
 import { newPathSeed } from "@/lib/ocular-path";
-import { useWebGazer } from "@/lib/use-webgazer";
+import { useWebEyeTrack } from "@/lib/use-web-eye-track";
 import type { OcularSample } from "@/lib/types";
 
 type Phase = "permission" | "calibrate" | "play" | "submitting" | "error";
@@ -34,7 +34,7 @@ export default function OcularGamePage() {
     init,
     teardown,
     recordCalibrationClick,
-  } = useWebGazer();
+  } = useWebEyeTrack();
 
   // Abort if the tab is backgrounded mid-play — samples would be garbage.
   useEffect(() => {
@@ -119,6 +119,7 @@ export default function OcularGamePage() {
         <WebGazerCalibration
           onCalibrationClick={recordCalibrationClick}
           onComplete={handleCalibrationComplete}
+          gaze={gaze}
         />
       </div>
     );

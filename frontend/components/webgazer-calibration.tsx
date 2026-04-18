@@ -4,7 +4,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { Check } from "lucide-react";
 
+import { GazeDot } from "@/components/gaze-dot";
 import { Button } from "@/components/ui/button";
+import type { GazePoint } from "@/lib/use-webgazer";
 import { cn } from "@/lib/utils";
 
 interface CalibrationPoint {
@@ -30,11 +32,14 @@ interface WebGazerCalibrationProps {
   onCalibrationClick: (clientX: number, clientY: number) => void;
   /** Fires when all 25 clicks are done */
   onComplete: () => void;
+  /** Live gaze point — rendered subtly so the user can verify tracking */
+  gaze?: GazePoint | null;
 }
 
 export function WebGazerCalibration({
   onCalibrationClick,
   onComplete,
+  gaze = null,
 }: WebGazerCalibrationProps) {
   const [points, setPoints] = useState<CalibrationPoint[]>(
     POINTS.map((p) => ({ ...p, clicks: 0 })),
@@ -66,16 +71,29 @@ export function WebGazerCalibration({
         className="absolute left-1/2 top-20 z-10 -translate-x-1/2 rounded-xl border border-slate-800 bg-safegate-surface/90 px-6 py-4 text-center backdrop-blur"
       >
         <p className="text-sm font-medium text-slate-200">
-          Click each glowing dot{" "}
+          <span className="text-safegate-primary">Stare</span> at each dot, then
+          click it{" "}
           <span className="font-mono text-safegate-primary">
             {CLICKS_PER_POINT}
           </span>{" "}
-          times. Keep your head still.
+          times.
         </p>
-        <p className="mt-1 font-mono text-xs text-slate-500">
+        <p className="mt-1 text-xs text-slate-400">
+          Keep your head still. Your eyes must be on the dot when you click.
+        </p>
+        <p className="mt-2 font-mono text-xs text-slate-500">
           {totalClicks} / {totalNeeded}
         </p>
+        {gaze && (
+          <p className="mt-1 font-mono text-[10px] text-safegate-success">
+            ● tracking
+          </p>
+        )}
       </motion.div>
+
+      {/* Subtle live gaze indicator — gives the user confidence that the
+          camera is actually producing a signal before play begins. */}
+      <GazeDot gaze={gaze} subtle />
 
       {/* Calibration points */}
       {points.map((p, idx) => {

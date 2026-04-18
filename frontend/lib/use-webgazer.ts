@@ -22,6 +22,9 @@ export interface UseWebGazerReturn {
 }
 
 const GAZE_THROTTLE_MS = 33; // ~30 Hz — matches backend MIN_SAMPLE_HZ guardrail
+// Exponential moving average factor for gaze smoothing. WebGazer's raw output
+// is very noisy (±30–50 px jitter); α = 0.25 damps that ~4x with minimal lag.
+const SMOOTH_ALPHA = 0.25;
 
 /**
  * React hook wrapping WebGazer.js lifecycle. Dynamic-imports the library
@@ -38,6 +41,7 @@ export function useWebGazer(): UseWebGazerReturn {
   const wgRef = useRef<WebGazerInstance | null>(null);
   const mountedRef = useRef(true);
   const lastUpdateRef = useRef(0);
+  const smoothRef = useRef<GazePoint | null>(null);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -63,6 +67,11 @@ export function useWebGazer(): UseWebGazerReturn {
     try {
       const { default: webgazer } = await import("webgazer");
 
+      // MediaPipe face_mesh assets are copied into /public/mediapipe/face_mesh
+      // at build time (see README). Override the default relative path so
+      // WebGazer resolves them from the site root regardless of current route.
+      webgazer.params.faceMeshSolutionPath = "/mediapipe/face_mesh";
+
       webgazer
         .setRegression("ridge")
         .saveDataAcrossSessions(false)
@@ -74,10 +83,26 @@ export function useWebGazer(): UseWebGazerReturn {
 
       webgazer.setGazeListener((data) => {
         if (!mountedRef.current || !data) return;
+
+        // Smooth every raw sample — EMA runs at WebGazer's native rate (~60 Hz),
+        // so the filter genuinely averages across the full signal instead of
+        // only across already-thinned samples. This is the single biggest win
+        // for perceived tracking quality.
+        const prev = smoothRef.current;
+        const next: GazePoint = prev
+          ? {
+              x: prev.x + SMOOTH_ALPHA * (data.x - prev.x),
+              y: prev.y + SMOOTH_ALPHA * (data.y - prev.y),
+            }
+          : { x: data.x, y: data.y };
+        smoothRef.current = next;
+
+        // Throttle React state updates to ~30 Hz to keep the sampler cadence
+        // aligned with backend expectations and avoid re-render thrash.
         const now = performance.now();
         if (now - lastUpdateRef.current < GAZE_THROTTLE_MS) return;
         lastUpdateRef.current = now;
-        setGaze({ x: data.x, y: data.y });
+        setGaze(next);
       });
 
       await webgazer.begin();
@@ -106,6 +131,7 @@ export function useWebGazer(): UseWebGazerReturn {
     wg.clearGazeListener();
     await wg.end().catch(() => undefined);
     wgRef.current = null;
+    smoothRef.current = null;
     if (mountedRef.current) {
       setStatus("idle");
       setGaze(null);
