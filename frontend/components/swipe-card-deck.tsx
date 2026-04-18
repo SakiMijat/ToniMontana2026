@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useMotionValue, useTransform } from "framer-motion";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MoveLeft, MoveRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -22,10 +22,10 @@ function generateDeck(count: number): number[] {
 }
 
 export function SwipeCardDeck({ totalRounds = 10, onComplete }: SwipeCardDeckProps) {
-  const deck = useMemo(() => generateDeck(totalRounds), [totalRounds]);
+  const [deck, setDeck] = useState<number[] | null>(null);
   const [index, setIndex] = useState(0);
   const [attempts, setAttempts] = useState<SwipeAttempt[]>([]);
-  const shownAt = useRef<number>(performance.now());
+  const shownAt = useRef(0);
 
   const x = useMotionValue(0);
   // design.md §1 — LEFT=Amber (warning) hint, RIGHT=Cyan (primary) hint
@@ -43,12 +43,19 @@ export function SwipeCardDeck({ totalRounds = 10, onComplete }: SwipeCardDeckPro
   const rotate = useTransform(x, [-200, 200], [-18, 18]);
 
   useEffect(() => {
+    setDeck(generateDeck(totalRounds));
+    setIndex(0);
+    setAttempts([]);
+  }, [totalRounds]);
+
+  useEffect(() => {
+    if (!deck) return;
     shownAt.current = performance.now();
     x.set(0);
-  }, [index, x]);
+  }, [deck, index, x]);
 
   const recordSwipe = (side: SwipeSide) => {
-    if (index >= deck.length) return;
+    if (!deck || index >= deck.length) return;
     const latencyMs = Math.round(performance.now() - shownAt.current);
     const attempt: SwipeAttempt = { number: deck[index], chosenSide: side, latencyMs };
     const next = [...attempts, attempt];
@@ -60,6 +67,15 @@ export function SwipeCardDeck({ totalRounds = 10, onComplete }: SwipeCardDeckPro
       setIndex((i) => i + 1);
     }
   };
+
+  if (!deck) {
+    return (
+      <div className="flex w-full max-w-md flex-col items-center gap-8">
+        <div className="h-[360px] w-full animate-pulse rounded-xl border border-slate-800 bg-safegate-surface/70" />
+        <p className="font-mono text-sm text-slate-500">Preparing challenge...</p>
+      </div>
+    );
+  }
 
   const current = deck[index];
   const done = index >= deck.length;

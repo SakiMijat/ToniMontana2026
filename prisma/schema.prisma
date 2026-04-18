@@ -7,44 +7,63 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
-  email         String    @unique
-  baselineScore Float     @default(1.0)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
+model Partner {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  partnerId Int    @unique @map("id")
+  name      String
+  users     User[]
+
+  @@map("partners")
 }
 
-// Tier thresholds — APPROVED ≥ 0.8 | RECALIBRATING ≥ 0.5 | DENIED < 0.5
+model User {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  userRecordId   Int       @unique @map("id")
+  externalUserId Int       @map("user_id")
+  username       String    @map("user")
+  partnerId      Int       @map("partner_id")
+  partner        Partner   @relation(fields: [partnerId], references: [partnerId])
+  sessions       Session[]
+
+  @@unique([externalUserId, partnerId])
+  @@map("users")
+}
+
 model Session {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String        @db.ObjectId
-  user        User          @relation(fields: [userId], references: [id])
-  status      SessionStatus @default(PENDING)
-  finalScore  Float?
-  attempts    Int           @default(1)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  sessionId   Int          @unique @map("session_id")
+  userId      Int          @map("user_id")
+  startTime   DateTime     @map("start_time")
+  endTime     DateTime?    @map("end_time")
+  result      Int?
+  status      SessionStatus?
+  firstGame   GameType?    @map("first_game")
+  secondGame  GameType?    @map("second_game")
+  currentGame GameType?    @map("current_game")
+  currentStep Int?         @map("current_step")
+  user        User         @relation(fields: [userId], references: [userRecordId])
   gameResults GameResult[]
+
+  @@map("sessions")
 }
 
 model GameResult {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  sessionId String   @db.ObjectId
-  session   Session  @relation(fields: [sessionId], references: [id])
+  sessionId Int      @map("session_id")
+  session   Session  @relation(fields: [sessionId], references: [sessionId])
   gameType  GameType
+  stepIndex Int?     @map("step_index")
   metrics   Json
   passed    Boolean
   createdAt DateTime @default(now())
+
+  @@map("game_results")
 }
 
 enum SessionStatus {
-  PENDING
-  APPROVED
-  RECALIBRATING
-  DENIED
+  ACTIVE
+  PASSED
+  FAILED
 }
 
 enum GameType {
@@ -53,6 +72,7 @@ enum GameType {
   MAZE
   REVERSE_TYPE
   MEMORY
+  REFLEX
   SWIPE
   STROOP
 }

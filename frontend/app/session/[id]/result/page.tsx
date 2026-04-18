@@ -5,14 +5,14 @@ import { useEffect, useState } from "react";
 
 import { GameHeader } from "@/components/game-header";
 import { TierResult } from "@/components/tier-result";
-import { tierFromScore, type SwipeSubmitResponse } from "@/lib/types";
+import { tierFromSessionResult, type SessionGameResult } from "@/lib/types";
 
 export default function SwipeResultPage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const sessionId = params.id;
 
-  const [result, setResult] = useState<SwipeSubmitResponse | null>(null);
+  const [result, setResult] = useState<SessionGameResult | null>(null);
 
   useEffect(() => {
     const raw = window.localStorage.getItem(`safegate:result:${sessionId}`);
@@ -21,11 +21,17 @@ export default function SwipeResultPage() {
       return;
     }
     try {
-      setResult(JSON.parse(raw) as SwipeSubmitResponse);
+      setResult(JSON.parse(raw) as SessionGameResult);
     } catch {
       router.replace("/");
     }
   }, [sessionId, router]);
+
+  useEffect(() => {
+    if (result && result.sessionResult === null) {
+      router.replace("/");
+    }
+  }, [result, router]);
 
   if (!result) {
     return (
@@ -35,11 +41,15 @@ export default function SwipeResultPage() {
     );
   }
 
-  const tier = tierFromScore(result.score);
+  if (result.sessionResult === null) {
+    return null;
+  }
+
+  const tier = tierFromSessionResult(result.sessionResult);
 
   return (
     <div className="flex min-h-screen flex-col">
-      <GameHeader title="Result" progress={{ current: 3, total: 3 }} />
+      <GameHeader title="Result" progress={{ current: 2, total: 2 }} />
       <main className="flex flex-1 items-center justify-center px-6 py-10">
         <TierResult
           tier={tier}

@@ -10,7 +10,7 @@ export interface SwipeAttempt {
 }
 
 export interface SwipeSubmitPayload {
-  sessionId: string;
+  sessionId: number;
   attempts: SwipeAttempt[];
 }
 

@@ -52,8 +52,9 @@ function scoreAttempts(attempts: SwipeAttempt[]): SwipeMetrics {
 }
 
 export async function scoreAndPersistSwipeGame(
-  sessionId: string,
+  sessionId: number,
   attempts: SwipeAttempt[],
+  stepIndex: number,
 ): Promise<SwipeGameResult> {
   const metrics = scoreAttempts(attempts);
   const { accuracy, latencyNormalized } = metrics;
@@ -64,6 +65,7 @@ export async function scoreAndPersistSwipeGame(
   await prisma.gameResult.create({
     data: {
       sessionId,
+      stepIndex,
       gameType: "SWIPE",
       passed,
       // Cast to satisfy Prisma's InputJsonValue — SwipeRoundResult[] is a valid JSON array
