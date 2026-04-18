@@ -11,7 +11,8 @@ interface TierResultProps {
   tier: Tier;
   score: number;
   accuracy: number;
-  avgLatencyMs: number;
+  /** Per-game secondary metric — e.g. latency for SWIPE, smoothness for OCULAR */
+  secondary: { label: string; value: string };
   onRetry?: () => void;
   onUnlock?: () => void;
   onCallTaxi?: () => void;
@@ -39,7 +40,7 @@ export function TierResult({
   tier,
   score,
   accuracy,
-  avgLatencyMs,
+  secondary,
   onRetry,
   onUnlock,
   onCallTaxi,
@@ -87,7 +88,7 @@ export function TierResult({
       <dl className="grid w-full grid-cols-3 gap-3 rounded-xl border border-slate-800 bg-safegate-bg/60 p-4 text-left">
         <Metric label="Score" value={(score * 100).toFixed(0) + "%"} />
         <Metric label="Accuracy" value={(accuracy * 100).toFixed(0) + "%"} />
-        <Metric label="Avg Latency" value={`${avgLatencyMs.toFixed(0)}ms`} />
+        <Metric label={secondary.label} value={secondary.value} />
       </dl>
 
       <div className="flex w-full flex-col gap-3">

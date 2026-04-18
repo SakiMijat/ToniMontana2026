@@ -18,7 +18,7 @@ export default function LandingPage() {
     setError(null);
     try {
       const { sessionId } = await startSession();
-      router.push(`/session/${sessionId}/swipe`);
+      router.push(`/session/${sessionId}/ocular`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to start session");
       setLoading(false);
@@ -64,7 +64,7 @@ export default function LandingPage() {
         )}
 
         <p className="font-mono text-[10px] uppercase tracking-widest text-slate-600">
-          Game 6 · Decision Speed · Kartice Levo/Desno
+          Game 1 · Ocular Pursuit · Prati Tačku
         </p>
       </motion.div>
     </main>
