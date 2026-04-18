@@ -29,3 +29,40 @@ export interface OcularGameResult {
   passed: boolean;
   metrics: OcularMetrics;
 }
+
+export interface TrackedOcularSample {
+  t: number;
+  gx: number | null;
+  gy: number | null;
+}
+
+export interface TrackedOcularSubmitPayload {
+  sessionId: string;
+  pathSeed: number;
+  startedAt: number;
+  durationMs: number;
+  samples: TrackedOcularSample[];
+}
+
+export interface TrackedOcularMetrics {
+  totalSamples: number;
+  validSamples: number;
+  nullRatio: number;
+  avgDeviation: number;
+  accuracy: number;
+  saccadeCount: number;
+  smoothness: number;
+  sampleHz: number;
+}
+
+export interface TrackedOcularGameResult {
+  score: number;
+  passed: boolean;
+  metrics: TrackedOcularMetrics;
+}
+
+export type OcularRejectReason =
+  | "SAMPLE_RATE_TOO_LOW"
+  | "TOO_MANY_NULL_SAMPLES"
+  | "STATIC_GAZE"
+  | "DURATION_OUT_OF_RANGE";

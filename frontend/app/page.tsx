@@ -1,6 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -8,28 +10,19 @@ import { useState } from "react";
 import { UnlockSlider } from "@/components/unlock-slider";
 import { startSession } from "@/lib/api";
 
-const DEMO_ACCESS = {
-  partnerId: 1,
-  userId: 1,
-};
-
 export default function LandingPage() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [unlockResetKey, setUnlockResetKey] = useState(0);
 
+  // Slide-to-unlock kicks off the cognitive check: create a session, then
+  // send the user to Game 1 (ocular pursuit).
   const handleUnlock = async () => {
-    setLoading(true);
     setError(null);
-
     try {
-      const session = await startSession(DEMO_ACCESS);
-      router.push(session.challengePath);
+      const { sessionId } = await startSession();
+      router.push(`/session/${sessionId}/ocular`);
     } catch (err) {
-      setLoading(false);
-      setError(err instanceof Error ? err.message : "Unable to start the challenge.");
-      setUnlockResetKey((value) => value + 1);
+      setError(err instanceof Error ? err.message : "Failed to start session");
     }
   };
 
@@ -56,31 +49,22 @@ export default function LandingPage() {
             SafeGate
           </h1>
           <p className="max-w-xl text-base font-medium leading-relaxed text-slate-400 sm:text-lg">
-            Slide to begin the vehicle check. On unlock, the app verifies the
-            latest session for this demo user and sends them straight into the
-            next available challenge when access is allowed.
+            Slide the lock to start your 60-second cognitive check. No hardware,
+            no friction — just proof you&apos;re fit to drive.
           </p>
         </div>
 
-        <UnlockSlider key={unlockResetKey} onUnlock={handleUnlock} />
+        <UnlockSlider onUnlock={handleUnlock} />
 
-        <div className="space-y-3">
-          <p className="font-mono text-[11px] uppercase tracking-[0.32em] text-slate-600">
-            Demo partner 1 · Demo user 1
+        {error && (
+          <p className="w-full max-w-xl rounded-xl border border-safegate-danger/40 bg-safegate-danger/10 p-3 text-sm text-safegate-danger">
+            {error}
           </p>
+        )}
 
-          {loading && (
-            <p className="text-sm font-medium text-safegate-primary">
-              Checking access and selecting a challenge...
-            </p>
-          )}
-
-          {error && (
-            <p className="mx-auto max-w-xl rounded-xl border border-safegate-danger/40 bg-safegate-danger/10 px-4 py-3 text-sm text-safegate-danger">
-              {error}
-            </p>
-          )}
-        </div>
+        <p className="font-mono text-[11px] uppercase tracking-[0.32em] text-slate-600">
+          Game 1 · Ocular Pursuit · Prati Tačku
+        </p>
       </motion.div>
     </main>
   );
