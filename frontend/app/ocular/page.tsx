@@ -50,7 +50,7 @@ export default function OcularGamePage() {
   }, [phase]);
 
   const skipToSwipe = useCallback(() => {
-    teardown().finally(() => router.replace(`/session/${sessionId}/swipe`));
+    teardown().finally(() => router.replace(`/swipe`));
   }, [router, sessionId, teardown]);
 
   const handleEnableCamera = useCallback(async () => {
@@ -84,7 +84,7 @@ export default function OcularGamePage() {
           JSON.stringify({ ...result, gameType: "OCULAR" }),
         );
         await teardown();
-        router.push(`/session/${sessionId}/result`);
+        router.push(`/result`);
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Submission failed";
         setSubmitError(msg);
