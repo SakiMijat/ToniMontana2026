@@ -62,7 +62,7 @@ export function TajmerDugme() {
       <div className="pointer-events-none fixed inset-0 bg-radial-fade" />
 
       <GameHeader
-        title="Tajmer Dugme"
+        title="Fast Reaction Time"
         subtitle="Reflex"
         secondsLeft={null}
         stepIndex={PHASE_STEP[phase]}

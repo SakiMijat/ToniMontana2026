@@ -1,4 +1,4 @@
-import type { ReverseTypeMetrics, ScoreReport, TierStatus } from "./types";
+import type { ReverseTypeMetrics, ScoreReport, TierStatus } from "./typesPisanjeUnazad";
 
 /**
  * SafeGate scoring — Pisanje Unazad (REVERSE_TYPE).

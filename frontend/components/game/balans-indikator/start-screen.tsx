@@ -31,7 +31,7 @@ export function StartScreen({ onStart, durationSec }: StartScreenProps) {
       </p>
 
       <h2 className="mb-4 text-4xl font-bold tracking-tight text-slate-50 sm:text-5xl">
-        Balans Indikator
+        Balance Indicator
       </h2>
       <p className="mb-6 max-w-md text-sm leading-relaxed text-slate-400 sm:text-base">
         The indicator drifts along the rope on its own. Use the{" "}

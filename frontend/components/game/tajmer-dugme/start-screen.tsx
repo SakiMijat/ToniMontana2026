@@ -31,7 +31,7 @@ export function StartScreen({ onStart, totalTrials }: StartScreenProps) {
       </p>
 
       <h2 className="mb-4 text-4xl font-bold tracking-tight text-slate-50 sm:text-5xl">
-        Tajmer Dugme
+        Fast Reaction Time
       </h2>
       <p className="mb-8 max-w-md text-sm leading-relaxed text-slate-400 sm:text-base">
         The button will turn from{" "}

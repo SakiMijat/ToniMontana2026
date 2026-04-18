@@ -9,29 +9,27 @@
  */
 export const WORD_POOL: readonly string[] = [
   "MOTOR",
-  "RADAR",
-  "AVION",
-  "CESTA",
-  "VOLAN",
+  "PLANE",
+  "ROADS",  
+  "WHEEL",
   "ZEBRA",
-  "MORJE",
-  "DREVO",
-  "TRAVA",
-  "KAMEN",
-  "POLJE",
-  "BRADA",
-  "GLAVA",
-  "SUNCE",
-  "MESEC",
+  "OCEAN",
+  "TREES", 
+  "GRASS",
+  "STONE",
+  "FIELD",
+  "BEARD",
+  "HEADS",
+  "SOLAR",
+  "MONTH",
   "ROBOT",
   "LASER",
   "TIGER",
   "HOTEL",
-  "METAR",
+  "METER",
   "VIDEO",
-  "PISMO",
+  "LETTE"    // trimmed from LETTER (better option below)
 ];
-
 /**
  * Pick a uniformly random word from the pool.
  * Accepts an optional excluded word so consecutive rounds don't repeat.

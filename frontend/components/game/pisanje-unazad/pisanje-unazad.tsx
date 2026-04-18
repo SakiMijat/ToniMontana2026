@@ -104,7 +104,7 @@ export function PisanjeUnazad() {
       <div className="pointer-events-none fixed inset-0 bg-radial-fade" />
 
       <GameHeader
-        title="Pisanje Unazad"
+        title="Writing Back"
         subtitle="Executive Function"
         secondsLeft={headerTimer}
         stepIndex={PHASE_STEP[phase]}

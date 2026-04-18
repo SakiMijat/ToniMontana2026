@@ -1,4 +1,4 @@
-import type { ReflexMetrics, ScoreReport, TierStatus, TrialResult } from "./types";
+import type { ReflexMetrics, ScoreReport, TierStatus, TrialResult } from "./typesTajmerDugme";
 
 /**
  * SafeGate scoring — Tajmer Dugme (REFLEX / TIMER).

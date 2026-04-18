@@ -73,7 +73,7 @@ export function BalansIndikator() {
       <div className="pointer-events-none fixed inset-0 bg-radial-fade" />
 
       <GameHeader
-        title="Balans Indikator"
+        title="Balance Indicator"
         subtitle="Motor Tracking"
         secondsLeft={headerTimer}
         stepIndex={PHASE_STEP[phase]}

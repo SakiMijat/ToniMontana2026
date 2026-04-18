@@ -31,7 +31,7 @@ export function StartScreen({ onStart }: StartScreenProps) {
       </p>
 
       <h2 className="mb-4 text-4xl font-bold tracking-tight text-slate-50 sm:text-5xl">
-        Pisanje Unazad
+        Writing Back
       </h2>
       <p className="mb-8 max-w-md text-sm leading-relaxed text-slate-400 sm:text-base">
         A 5-letter word will be shown for 3 seconds. After it disappears, type
