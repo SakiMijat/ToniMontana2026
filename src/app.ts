@@ -3,8 +3,10 @@ import express from "express";
 
 import { healthRouter } from "./routes/health.route";
 import { ocularRouter } from "./routes/ocular.route";
+import { partnerRouter } from "./routes/partner.route";
 import { sessionRouter } from "./routes/session.route";
 import { swipeRouter } from "./routes/swipe.route";
+import { userRouter } from "./routes/user.route";
 
 export const app = express();
 
@@ -16,6 +18,8 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/api", healthRouter);
+app.use("/api/partners", partnerRouter);
+app.use("/api/users", userRouter);
 app.use("/api/sessions", sessionRouter);
 app.use("/api/games/swipe", swipeRouter);
 app.use("/api/games/ocular", ocularRouter);

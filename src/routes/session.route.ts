@@ -1,39 +1,73 @@
 import { Router, type Request, type Response } from "express";
-
 import { prisma } from "../lib/prisma";
 
 export const sessionRouter = Router();
 
-const DEMO_EMAIL = "demo@safegate.app";
-const DEMO_NAME = "Demo Driver";
+const DEFAULT_USER_ID = "69e3eb5598104d8fbdd39074";
 
-/**
- * POST /api/sessions/start
- *
- * Creates (or reuses) a demo user and opens a fresh Session in PENDING status.
- * Returns the sessionId that the frontend will carry through every game.
- *
- * Body (optional): { email?: string, name?: string }
- * Response 200: { sessionId, userId, status }
- */
-sessionRouter.post("/start", async (req: Request, res: Response) => {
-  const body = (req.body ?? {}) as { email?: unknown; name?: unknown };
-  const email = typeof body.email === "string" && body.email ? body.email : DEMO_EMAIL;
-  const name = typeof body.name === "string" && body.name ? body.name : DEMO_NAME;
-
-  const user = await prisma.user.upsert({
-    where: { email },
-    update: {},
-    create: { email, name },
-  });
+sessionRouter.post("/", async (req: Request, res: Response) => {
+  const body = req.body as Record<string, unknown>;
+  const userId = (typeof body.user_id === "string" && body.user_id) ? body.user_id : DEFAULT_USER_ID;
 
   const session = await prisma.session.create({
-    data: { userId: user.id },
+    data: { userId },
+  });
+
+  res.status(201).json({
+    _id: session.id,
+    user_id: session.userId,
+    result: session.result,
+    start_time: session.startTime,
+    end_time: session.endTime,
+  });
+});
+
+sessionRouter.patch("/:id/finish", async (req: Request, res: Response) => {
+  const body = req.body as Record<string, unknown>;
+  const validResults = ["APPROVED", "RECALIBRATING", "DENIED"];
+
+  if (!validResults.includes(body.result as string)) {
+    res.status(400).json({ error: "result must be APPROVED | RECALIBRATING | DENIED" });
+    return;
+  }
+
+  const session = await prisma.session.findUnique({ where: { id: req.params.id } });
+  if (!session) {
+    res.status(404).json({ error: "Session not found" });
+    return;
+  }
+
+  const updated = await prisma.session.update({
+    where: { id: req.params.id },
+    data: { result: body.result as "APPROVED" | "RECALIBRATING" | "DENIED", endTime: new Date() },
   });
 
   res.status(200).json({
-    sessionId: session.id,
-    userId: user.id,
-    status: session.status,
+    _id: updated.id,
+    user_id: updated.userId,
+    result: updated.result,
+    start_time: updated.startTime,
+    end_time: updated.endTime,
+  });
+});
+
+sessionRouter.get("/:id", async (req: Request, res: Response) => {
+  const session = await prisma.session.findUnique({
+    where: { id: req.params.id },
+    include: { gameResults: true },
+  });
+
+  if (!session) {
+    res.status(404).json({ error: "Session not found" });
+    return;
+  }
+
+  res.status(200).json({
+    _id: session.id,
+    user_id: session.userId,
+    result: session.result,
+    start_time: session.startTime,
+    end_time: session.endTime,
+    gameResults: session.gameResults,
   });
 });

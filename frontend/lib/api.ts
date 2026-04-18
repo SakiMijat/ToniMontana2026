@@ -23,8 +23,9 @@ async function postJson<T>(path: string, body: unknown): Promise<T> {
   return (await res.json()) as T;
 }
 
-export function startSession(): Promise<SessionStartResponse> {
-  return postJson<SessionStartResponse>("/api/sessions/start", {});
+export async function startSession(): Promise<SessionStartResponse> {
+  const raw = await postJson<{ _id: string; user_id: string }>("/api/sessions", {});
+  return { sessionId: raw._id, userId: raw.user_id };
 }
 
 export function submitSwipeGame(

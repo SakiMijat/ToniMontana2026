@@ -74,7 +74,6 @@ export type OcularRejectReason =
 export interface SessionStartResponse {
   sessionId: string;
   userId: string;
-  status: "PENDING" | "APPROVED" | "RECALIBRATING" | "DENIED";
 }
 
 export type Tier = "APPROVED" | "RECALIBRATE" | "DENIED";

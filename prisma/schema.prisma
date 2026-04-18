@@ -7,26 +7,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
-  email         String    @unique
-  baselineScore Float     @default(1.0)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
+model Partner {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  name  String
+  users User[]
 }
 
-// Tier thresholds — APPROVED ≥ 0.8 | RECALIBRATING ≥ 0.5 | DENIED < 0.5
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  partnerId String    @db.ObjectId
+  partner   Partner   @relation(fields: [partnerId], references: [id])
+  username  String
+  sessions  Session[]
+}
+
 model Session {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String        @db.ObjectId
-  user        User          @relation(fields: [userId], references: [id])
-  status      SessionStatus @default(PENDING)
-  finalScore  Float?
-  attempts    Int           @default(1)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String         @db.ObjectId
+  user        User           @relation(fields: [userId], references: [id])
+  result      SessionResult?
+  startTime   DateTime       @default(now())
+  endTime     DateTime?
   gameResults GameResult[]
 }
 
@@ -40,8 +41,7 @@ model GameResult {
   createdAt DateTime @default(now())
 }
 
-enum SessionStatus {
-  PENDING
+enum SessionResult {
   APPROVED
   RECALIBRATING
   DENIED

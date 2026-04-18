@@ -8,17 +8,30 @@ import { ShieldCheck } from "lucide-react";
 import { UnlockSlider } from "@/components/unlock-slider";
 import { startSession } from "@/lib/api";
 
+const GAME_ROUTES = [
+  "/ocular",
+  "/swipe",
+  "/balans-indikator",
+  "/kartice-boja",
+  "/maze",
+  "/pisanje-unazad",
+  "/tajmer-dugme",
+];
+
+function randomGame(): string {
+  return GAME_ROUTES[Math.floor(Math.random() * GAME_ROUTES.length)];
+}
+
 export default function LandingPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 
-  // Slide-to-unlock kicks off the cognitive check: create a session, then
-  // send the user to Game 1 (ocular pursuit).
   const handleUnlock = async () => {
     setError(null);
     try {
       const { sessionId } = await startSession();
-      router.push(`/session/${sessionId}/ocular`);
+      localStorage.setItem("safegate:session_id", sessionId);
+      router.push(randomGame());
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to start session");
     }
@@ -59,10 +72,6 @@ export default function LandingPage() {
             {error}
           </p>
         )}
-
-        <p className="font-mono text-[11px] uppercase tracking-[0.32em] text-slate-600">
-          Game 1 · Ocular Pursuit · Prati Tačku
-        </p>
       </motion.div>
     </main>
   );
