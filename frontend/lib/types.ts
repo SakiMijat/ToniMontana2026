@@ -1,5 +1,3 @@
-// Mirrors src/games/swipe/swipe.types.ts on the backend.
-
 export type SwipeSide = "LEFT" | "RIGHT";
 export type ChallengeType =
   | "SWIPE"
@@ -65,6 +63,12 @@ export interface OcularAttempt {
   latencyMs: number;
   targetX: number;
   targetY: number;
+}
+
+export interface OcularSample {
+  t: number;
+  gx: number | null;
+  gy: number | null;
 }
 
 export interface SwipeRoundResult extends SwipeAttempt {
@@ -198,15 +202,52 @@ export interface SwipeSubmitResponse extends BaseGameSubmitResponse {
   metrics: SwipeMetrics;
 }
 
-// ───── Ocular (Game 1) — mirrors src/games/ocular/ocular.types.ts ─────
-
-export interface OcularSample {
-  t: number;
-  gx: number | null;
-  gy: number | null;
+export interface ReflexSubmitResponse extends BaseGameSubmitResponse {
+  gameType: "REFLEX";
+  metrics: ReflexMetrics;
 }
 
-export interface OcularSubmitPayload {
+export interface TimerSubmitResponse extends BaseGameSubmitResponse {
+  gameType: "TIMER";
+  metrics: TimerMetrics;
+}
+
+export interface StroopSubmitResponse extends BaseGameSubmitResponse {
+  gameType: "STROOP";
+  metrics: StroopMetrics;
+}
+
+export interface MemorySubmitResponse extends BaseGameSubmitResponse {
+  gameType: "MEMORY";
+  metrics: MemoryMetrics;
+}
+
+export interface ReverseTypeSubmitResponse extends BaseGameSubmitResponse {
+  gameType: "REVERSE_TYPE";
+  metrics: ReverseTypeMetrics;
+}
+
+export interface MazeSubmitResponse extends BaseGameSubmitResponse {
+  gameType: "MAZE";
+  metrics: MazeMetrics;
+}
+
+export interface OcularSubmitResponse extends BaseGameSubmitResponse {
+  gameType: "OCULAR";
+  metrics: OcularMetrics;
+}
+
+export type SessionGameResult =
+  | SwipeSubmitResponse
+  | ReflexSubmitResponse
+  | TimerSubmitResponse
+  | StroopSubmitResponse
+  | MemorySubmitResponse
+  | ReverseTypeSubmitResponse
+  | MazeSubmitResponse
+  | OcularSubmitResponse;
+
+export interface TrackedOcularSubmitPayload {
   sessionId: string;
   pathSeed: number;
   startedAt: number;
@@ -214,7 +255,7 @@ export interface OcularSubmitPayload {
   samples: OcularSample[];
 }
 
-export interface OcularMetrics {
+export interface TrackedOcularMetrics {
   totalSamples: number;
   validSamples: number;
   nullRatio: number;
@@ -225,12 +266,12 @@ export interface OcularMetrics {
   sampleHz: number;
 }
 
-export interface OcularSubmitResponse {
+export interface TrackedOcularSubmitResponse {
   gameType: "OCULAR";
   sessionId: string;
   passed: boolean;
   score: number;
-  metrics: OcularMetrics;
+  metrics: TrackedOcularMetrics;
 }
 
 export type OcularRejectReason =
@@ -253,7 +294,6 @@ export interface SessionStartResponse {
 
 export type Tier = "APPROVED" | "RECALIBRATE" | "DENIED";
 
-// Tier thresholds from documentation.md §2 "Escalation Ladder"
 export function tierFromScore(score: number): Tier {
   if (score >= 0.8) return "APPROVED";
   if (score >= 0.5) return "RECALIBRATE";

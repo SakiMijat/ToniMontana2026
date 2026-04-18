@@ -2,7 +2,11 @@ import cors from "cors";
 import express from "express";
 
 import { healthRouter } from "./routes/health.route";
+import { mazeRouter } from "./routes/maze.route";
+import { memoryRouter } from "./routes/memory.route";
 import { ocularRouter } from "./routes/ocular.route";
+import { reflexRouter } from "./routes/reflex.route";
+import { reverseTypeRouter } from "./routes/reverse-type.route";
 import { sessionRouter } from "./routes/session.route";
 import { stroopRouter } from "./routes/stroop.route";
 import { swipeRouter } from "./routes/swipe.route";
@@ -26,4 +30,4 @@ app.use("/api/games/reflex", reflexRouter);
 app.use("/api/games/reverse-type", reverseTypeRouter);
 app.use("/api/games/stroop", stroopRouter);
 app.use("/api/games/swipe", swipeRouter);
-app.use("/api/games/ocular", ocularRouter);
+app.use("/api/games/timer", timerRouter);

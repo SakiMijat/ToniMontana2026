@@ -16,7 +16,7 @@ interface UnlockSliderProps {
 const HANDLE_SIZE = 72;
 const TRACK_PADDING = 6;
 const COMPLETE_RATIO = 0.82;
-const springTransition = { type: "spring", stiffness: 320, damping: 32 } as const;
+const springTransition = { type: "spring" as const, stiffness: 320, damping: 32 };
 
 export function UnlockSlider({
   onUnlock,

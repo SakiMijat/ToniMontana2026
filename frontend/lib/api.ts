@@ -1,6 +1,14 @@
 import type {
-  OcularSubmitPayload,
+  MazeAttempt,
+  MazeSubmitResponse,
+  MemoryAttempt,
+  MemorySubmitResponse,
+  OcularAttempt,
   OcularSubmitResponse,
+  ReflexAttempt,
+  ReflexSubmitResponse,
+  ReverseTypeAttempt,
+  ReverseTypeSubmitResponse,
   SessionStartResponse,
   StroopAttempt,
   StroopSubmitResponse,
@@ -8,6 +16,8 @@ import type {
   SwipeSubmitResponse,
   TimerAttempt,
   TimerSubmitResponse,
+  TrackedOcularSubmitPayload,
+  TrackedOcularSubmitResponse,
 } from "./types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
@@ -65,8 +75,81 @@ export function submitSwipeGame(
   });
 }
 
+export function submitReflexGame(
+  sessionId: string,
+  attempts: ReflexAttempt[],
+): Promise<ReflexSubmitResponse> {
+  return postJson<ReflexSubmitResponse>("/api/games/reflex/submit", {
+    sessionId,
+    attempts,
+  });
+}
+
+export function submitTimerGame(
+  sessionId: string,
+  attempts: TimerAttempt[],
+): Promise<TimerSubmitResponse> {
+  return postJson<TimerSubmitResponse>("/api/games/timer/submit", {
+    sessionId,
+    attempts,
+  });
+}
+
+export function submitStroopGame(
+  sessionId: string,
+  attempts: StroopAttempt[],
+): Promise<StroopSubmitResponse> {
+  return postJson<StroopSubmitResponse>("/api/games/stroop/submit", {
+    sessionId,
+    attempts,
+  });
+}
+
+export function submitMemoryGame(
+  sessionId: string,
+  attempts: MemoryAttempt[],
+): Promise<MemorySubmitResponse> {
+  return postJson<MemorySubmitResponse>("/api/games/memory/submit", {
+    sessionId,
+    attempts,
+  });
+}
+
+export function submitReverseTypeGame(
+  sessionId: string,
+  attempts: ReverseTypeAttempt[],
+): Promise<ReverseTypeSubmitResponse> {
+  return postJson<ReverseTypeSubmitResponse>("/api/games/reverse-type/submit", {
+    sessionId,
+    attempts,
+  });
+}
+
+export function submitMazeGame(
+  sessionId: string,
+  attempts: MazeAttempt[],
+): Promise<MazeSubmitResponse> {
+  return postJson<MazeSubmitResponse>("/api/games/maze/submit", {
+    sessionId,
+    attempts,
+  });
+}
+
 export function submitOcularGame(
-  payload: OcularSubmitPayload,
+  sessionId: string,
+  attempts: OcularAttempt[],
 ): Promise<OcularSubmitResponse> {
-  return postJson<OcularSubmitResponse>("/api/games/ocular/submit", payload);
+  return postJson<OcularSubmitResponse>("/api/games/ocular/submit", {
+    sessionId,
+    attempts,
+  });
+}
+
+export function submitTrackedOcularGame(
+  payload: TrackedOcularSubmitPayload,
+): Promise<TrackedOcularSubmitResponse> {
+  return postJson<TrackedOcularSubmitResponse>(
+    "/api/games/ocular/track-submit",
+    payload,
+  );
 }
