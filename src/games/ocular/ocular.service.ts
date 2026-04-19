@@ -10,7 +10,7 @@ import type {
 // ───── Scoring constants (mirror documentation.md §5 formula shape) ─────
 const ACCURACY_WEIGHT = 0.7;
 const SMOOTHNESS_WEIGHT = 0.3;
-const PASS_THRESHOLD = 0.58; // pursuit is harder than swipe — keep bar softer
+const PASS_THRESHOLD = 0.4; // pursuit is harder than swipe — keep bar softer
 
 // Normalized deviation beyond this counts as "total miss"
 const MAX_DEVIATION = 0.36;
