@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────
+   SafeGate Design Tokens — CSS Variables
+   ───────────────────────────────────────────── */
+:root {
+  --bg: #020617;
+  --surface: #0f172a;
+  --surface-elevated: #1e293b;
+  --border: #1e293b;
+  --primary: #22d3ee;
+  --success: #10b981;
+  --warning: #fbbf24;
+  --danger: #e11d48;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+}
+
+/* ─────────────────────────────────────────────
+   Font loading — Geist via Google Fonts fallback
+   ───────────────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
+
+html,
+body {
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-family: "Geist", "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+}
+
+/* Prevent pull-to-refresh & iOS bounce during test */
+html,
+body {
+  overflow-x: hidden;
+}
+
+/* ─────────────────────────────────────────────
+   Atmospheric grid background
+   ───────────────────────────────────────────── */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(34, 211, 238, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: center center;
+}
+
+.bg-radial-fade {
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 50% 40%,
+      rgba(34, 211, 238, 0.08) 0%,
+      transparent 60%
+    );
+}
+
+/* ─────────────────────────────────────────────
+   Custom scrollbar (subtle, on-theme)
+   ───────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* ─────────────────────────────────────────────
+   Selection highlight — on-theme cyan
+   ───────────────────────────────────────────── */
+::selection {
+  background: rgba(34, 211, 238, 0.3);
+  color: #f8fafc;
+}
+
+/* ─────────────────────────────────────────────
+   Focus outlines — accessibility over aesthetics,
+   but on-theme
+   ───────────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Disable the default iOS tap highlight */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
