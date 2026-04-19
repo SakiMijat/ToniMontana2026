@@ -6,7 +6,6 @@ export const GAME_ROUTES = [
   "/ocular",
   "/balans-indikator",
   "/kartice-boja",
-  "/maze",
   "/pisanje-unazad",
   "/tajmer-dugme",
 ] as const;
@@ -14,7 +13,7 @@ export const GAME_ROUTES = [
 export type GameRoute = (typeof GAME_ROUTES)[number];
 
 // Maze is binary — you complete it or you don't
-const BINARY_GAMES: readonly GameRoute[] = ["/maze"];
+const BINARY_GAMES: readonly GameRoute[] = ["/pisanje-unazad"];
 
 export function outcomeFromScore(score: number, route: GameRoute): GameOutcome {
   if ((BINARY_GAMES as readonly string[]).includes(route)) {
