@@ -4,7 +4,6 @@ export type GameOutcome = "pass" | "tier2" | "fail";
 
 export const GAME_ROUTES = [
   "/ocular",
-  "/swipe",
   "/balans-indikator",
   "/kartice-boja",
   "/maze",

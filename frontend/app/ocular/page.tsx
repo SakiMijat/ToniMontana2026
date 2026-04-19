@@ -57,7 +57,7 @@ export default function OcularGamePage() {
   }, [phase]);
 
   const skipToSwipe = useCallback(() => {
-    teardown().finally(() => router.replace(`/swipe`));
+    teardown().finally(() => router.replace(`/kartice-boja`));
   }, [router, teardown]);
 
   const handleEnableCamera = useCallback(async () => {
