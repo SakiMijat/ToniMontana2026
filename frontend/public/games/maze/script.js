@@ -40,7 +40,7 @@ if (typeof window !== 'undefined') {
 
 
     // ---- Lives & Timer system ----
-    const TIME_LIMIT = 30;
+    const TIME_LIMIT = 12;
     let livesRemaining = 3;
     let gameStartTime = null;
     let timerInterval = null;
@@ -447,8 +447,10 @@ if (typeof window !== 'undefined') {
     function updateTimerDisplay(seconds) {
         let el = document.querySelector('.timer-display');
         if (el) {
-            el.textContent = '⏱️ ' + Math.floor(seconds) + 's';
-            el.style.color = seconds > 20 ? '#e74c3c' : 'white';
+            const remaining = Math.max(0, TIME_LIMIT - seconds);
+            el.textContent = Math.ceil(remaining).toString().padStart(2, '0') + 's';
+            // SafeGate palette: amber warning under 3s remaining, slate otherwise
+            el.style.color = remaining <= 3 ? '#fbbf24' : '#f8fafc';
         }
     }
 
@@ -479,12 +481,6 @@ if (typeof window !== 'undefined') {
         gameUI.style.display = 'none';
         document.querySelector('.banned-reason').textContent = reason;
         document.querySelector('.banned-overlay').style.display = 'flex';
-        // Fail: advance the game flow after a short delay so the user can read the message
-        setTimeout(() => {
-            if (typeof window.__safegateComplete === 'function') {
-                window.__safegateComplete(0.0);
-            }
-        }, 2500);
     }
 
 
@@ -561,18 +557,16 @@ if (typeof window !== 'undefined') {
         }
         
         winMessageDiv.style.display = 'flex';
-
+        
         setTimeout(() => {
             winMessageDiv.style.display = 'none';
             if (elapsed > TIME_LIMIT) {
-                showBannedScreen('You won! But your time was ' + Math.round(elapsed) + 's — over the ' + TIME_LIMIT + 's limit. ⏱️');
+                showBannedScreen('Zmaga! Ampak čas je bil ' + Math.round(elapsed) + 's — prekoračil si limit ' + TIME_LIMIT + 's. Žal ne moreš več igrati! ⏱️');
             } else {
-                // Pass: completed within time limit — advance the game flow
-                if (typeof window.__safegateComplete === 'function') {
-                    window.__safegateComplete(1.0);
-                }
+                gameStartBtn.style.display = 'block';
+                updateTimerDisplay(0);
             }
-        }, 2000);
+        }, 3000);
     }
 
 
