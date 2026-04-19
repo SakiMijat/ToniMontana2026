@@ -218,7 +218,7 @@ export default function OcularGamePage() {
             {/* Actions */}
             <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.75 }} className="flex w-full flex-col gap-3">
-              <Button variant="primary" size="lg" onClick={() => completeGame(result.score, "/ocular", router)} className="w-full">
+              <Button variant="primary" size="lg" onClick={() => completeGame(result.score, "/kartice-boja", router)} className="w-full">
                 <ArrowRight className="h-5 w-5" /> Continue
               </Button>
               <Button variant="ghost" onClick={() => { setResult(null); setPhase("permission"); }} className="w-full">

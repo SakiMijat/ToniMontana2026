@@ -3,7 +3,6 @@ import { finishSession } from "./api";
 export type GameOutcome = "pass" | "tier2" | "fail";
 
 export const GAME_ROUTES = [
-  "/ocular",
   "/balans-indikator",
   "/kartice-boja",
   "/pisanje-unazad",
