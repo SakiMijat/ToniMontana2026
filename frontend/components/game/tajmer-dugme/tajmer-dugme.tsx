@@ -11,7 +11,7 @@ import { StartScreen } from "./start-screen";
 import { buildMetrics, scoreRun } from "@/lib/scoringTajmerDugme";
 import type { GamePhase, ReflexMetrics, ScoreReport, TrialResult } from "@/lib/typesTajmerDugme";
 
-const TOTAL_TRIALS = 5;
+const TOTAL_TRIALS = 3;
 
 /** Maps a phase → which step dot is active (3 dots: START, TRIALS, RESULT) */
 const PHASE_STEP: Record<GamePhase, number> = {

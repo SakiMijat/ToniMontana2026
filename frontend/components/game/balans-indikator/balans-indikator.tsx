@@ -12,7 +12,7 @@ import { TrackingPhase } from "./tracking-phase";
 import { buildMetrics, scoreRun } from "@/lib/scoringBalans";
 import type { BalanceMetrics, GamePhase, ScoreReport, TrackSample } from "@/lib/typesBalans";
 
-const DURATION_MS = 15_000; // 15 seconds of tracking
+const DURATION_MS = 7_000; // 7 seconds of tracking
 const DURATION_SEC = DURATION_MS / 1000;
 
 /** Maps a phase → which step dot is active (3 dots: START, TRACK, RESULT) */
